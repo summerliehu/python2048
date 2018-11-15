@@ -159,25 +159,34 @@ class GameField(object):
 def main(stdscr):
     def init():
         #重置游戏棋盘
+        #Use the reset function to initialize the game
         game_field.reset()
         return 'Game'
 
     def not_game(state):
         #画出 GameOver 或者 Win 的界面
+        #Function launched when the game is won or over
         game_field.draw(stdscr)
         #读取用户输入得到action，判断是重启游戏还是结束游戏
+        #Waiting for the user to make an action
         action = game_field.get_user_action(stdscr)
         responses = defaultdict(lambda: state) #默认是当前状态，没有行为就会一直在当前界面循环
+        #Treatment of the action writen by the user
         responses['Restart'], responses['Exit'] = 'Init', 'Exit' #对应不同的行为转换到不同的状态
+        
         return responses[action]
 
 
     def game():
         #画出当前棋盘状态
+        #Drawing the game field
         game_field.draw(stdscr)
+        #Asking if the user push a button in order to do an action
         #读取用户输入得到action
         action = game_field.get_user_action(stdscr)
 
+
+        #Treatment of the action depending on what the user want
         if action == 'Restart':
             return 'Init'
         if action == 'Exit':
@@ -198,13 +207,14 @@ def main(stdscr):
         }
 
     curses.use_default_colors()
-
+    #Condition for the user to win
     # 设置终结状态最大数值为 32，可以自行修改
     game_field = GameField(win=32)
 
 
     state = 'Init'
     #状态机开始循环
+    #Condition to leave the game
     while state != 'Exit':
         state = state_actions[state]()
 
